@@ -7,14 +7,18 @@ class Header extends React.Component {
     return (
       <div>
 	<h1>808</h1>
-	<button className="play">
+	<button className="control">
 	  Play
 	</button>
-	<button className="stop">
+	<button className="control">
 	  Stop
 	</button>
-	<input type="number" id="bpm" name="quantity" min="0" value={128}></input>
-	<label for="bpm">BPM</label>
+	<input type="number" id="bpm" name="quantity" min="0" defaultValue={128} className="control"></input>
+	<label htmlFor="bpm">BPM</label>
+	<select id="sequence" className="control">
+	  <option value="custom">Custom</option>
+	  <option value="4-on-floor">4 on the floor</option>
+	</select>
       </div>
     );
   }
@@ -26,15 +30,19 @@ class Drums extends React.Component {
 
     return (
       <table>
-	<tr>
- 	  <th></th>
-	  { Array(16).fill('').map((_val, index) => (
-	    <th>{index + 1}</th>
+	<thead>
+	  <tr>
+	    <th></th>
+	    { Array(16).fill('').map((_val, index) => (
+	      <th key={index + 1}>{index + 1}</th>
+	    ))}
+	  </tr>
+	</thead>
+	<tbody>
+	  { drumNames.map((drumName) => (
+	    <Drum key={drumName} name={drumName} />
 	  ))}
-	</tr>
-	{ drumNames.map((drumName) => (
-	  <Drum name={drumName} />
-	))}
+	</tbody>
       </table>
     );
   }
@@ -44,9 +52,9 @@ class Drum extends React.Component {
   render() {
     return (
       <tr>
-	<td>{this.props.name}</td>
+	<td className="drum-name">{this.props.name}</td>
 	{ Array(16).fill('').map((_val, index) => (
-	  <Step />
+	  <Step key={index + 1} />
 	))}
       </tr>
     );
@@ -56,7 +64,10 @@ class Drum extends React.Component {
 class Step extends React.Component {
   render() {
     return (
-      <td>Step</td>
+      <td>
+	<button className="step">
+	</button>
+      </td>
     );
   }
 }

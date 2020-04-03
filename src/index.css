@@ -1,0 +1,16 @@
+table {
+  margin-top: 25px;
+}
+
+table button {
+  width: 25px;
+  height: 25px;
+}
+
+.drum-name {
+  font-weight: bold;
+}
+
+.control {
+  margin: 5px;
+}
