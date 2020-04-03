@@ -14,3 +14,7 @@ table button {
 .control {
   margin: 5px;
 }
+
+.step--on {
+  background: blue;
+}

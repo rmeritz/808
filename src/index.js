@@ -30,21 +30,18 @@ class Header extends React.Component {
 
 class Drums extends React.Component {
   render() {
-    const currentSequence = this.props.sequences[this.props.currentSequenceName];
     return (
       <table>
 	<thead>
 	  <tr>
 	    <th></th>
-	    { Object.values(currentSequence)[0].map((_value, index) => (
+	    { Object.values(this.props.currentSequence)[0].map((_value, index) => (
 	      <th key={index + 1}>{index + 1}</th>
 	    ))}
 	  </tr>
 	</thead>
 	<tbody>
-	  { Object.keys(currentSequence).map((drumName) => (
-	    <Drum key={drumName} name={drumName} steps={currentSequence[drumName]}/>
-	  ))}
+	  {this.props.drums}
 	</tbody>
       </table>
     );
@@ -56,9 +53,7 @@ class Drum extends React.Component {
     return (
       <tr>
 	<td className="drum-name">{this.props.name}</td>
-	{ this.props.steps.map((_val, index) => (
-	  <Step key={index + 1} />
-	))}
+	{this.props.steps}
       </tr>
     );
   }
@@ -68,7 +63,7 @@ class Step extends React.Component {
   render() {
     return (
       <td>
-	<button className="step">
+	<button className={`step ${this.props.isOn ? "step--on" : ""}`} onClick={this.props.handleClick}>
 	</button>
       </td>
     );
@@ -79,6 +74,7 @@ class DrumKit extends React.Component {
   constructor(props) {
     super(props);
     const sequences = this.buildSequences();
+    this.handleStepClick = this.handleStepClick.bind(this);
     this.state = {
       BPM: 128,
       sequences: sequences,
@@ -90,15 +86,31 @@ class DrumKit extends React.Component {
 
   buildSequences() {
     return {
-      'Custom' : this.props.drumNames.reduce((sequence, drumName) => Object.assign(sequence, { [drumName]: Array(this.props.stepCount).fill('') }), {})
+      'Custom' : this.props.drumNames.reduce((sequence, drumName) => Object.assign(sequence, { [drumName]: Array(this.props.stepCount).fill(false) }), {})
     }
   }
 
+  handleStepClick(drumName, stepIndex) {
+    const sequences = Object.assign({}, this.state.sequences);
+    sequences[this.state.currentSequenceName][drumName][stepIndex] = !sequences[this.state.currentSequenceName][drumName][stepIndex];
+    this.setState({ sequences: sequences });
+  }
+
   render() {
+    const currentSequence = this.state.sequences[this.state.currentSequenceName];
+
     return (
       <div>
-	<Header BPM={this.state.BPM} sequences={this.state.sequences} currentSequenceName={this.state.currentSequenceName}/>
-	<Drums sequences={this.state.sequences} currentSequenceName={this.state.currentSequenceName}/>
+	<Header BPM={this.state.BPM} sequences={this.state.sequences} />
+	<Drums
+	  currentSequence={currentSequence}
+	  drums={ Object.keys(currentSequence).map((drumName) => (
+	    <Drum
+              key={drumName} name={drumName}
+	      steps={ currentSequence[drumName].map((value, index) => (
+		<Step key={index + 1} isOn={value} handleClick={() => this.handleStepClick(drumName, index)}/>
+	      ))} />
+	    ))} />
       </div>
     );
   }
