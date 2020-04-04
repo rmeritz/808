@@ -18,3 +18,7 @@ table button {
 .step--on {
   background: blue;
 }
+
+.drum--playing {
+  color: green;
+}
